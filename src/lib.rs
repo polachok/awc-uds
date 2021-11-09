@@ -3,16 +3,21 @@ use actix_service::Service;
 use actix_tls::connect::{Connect, ConnectError, Connection};
 use awc::http::Uri;
 use std::future::Future;
-use std::path::{Path, PathBuf};
 use std::pin::Pin;
 use std::task::{Context, Poll};
+use std::{
+    io,
+    path::{Path, PathBuf},
+};
 
 #[derive(Clone)]
 pub struct UdsConnector(PathBuf);
 
 impl UdsConnector {
-    pub fn new(path: impl AsRef<Path>) -> Self {
-        UdsConnector(path.as_ref().to_path_buf())
+    pub fn new(path: impl AsRef<Path>) -> io::Result<Self> {
+        // check whether file exists, and if it can be opened
+        std::fs::metadata(&path)?;
+        Ok(UdsConnector(path.as_ref().to_path_buf()))
     }
 }
 
@@ -63,7 +68,7 @@ mod tests {
         });
 
         actix_rt::time::sleep(Duration::from_secs(1)).await;
-        let connector = Connector::new().connector(UdsConnector::new(socket_path2));
+        let connector = Connector::new().connector(UdsConnector::new(socket_path2).unwrap());
         let client = ClientBuilder::new().connector(connector).finish();
         let resp = client
             .get("http://localhost/")
