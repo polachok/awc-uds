@@ -29,7 +29,7 @@ impl Service<Connect<Uri>> for UdsConnector {
         let uri = req.request().clone();
         let path = self.0.clone();
         let fut = async {
-            let stream = UnixStream::connect(path).await.unwrap();
+            let stream = UnixStream::connect(path).await.map_err(ConnectError::Io)?;
             Ok(Connection::new(stream, uri))
         };
         Box::pin(fut)
