@@ -1,0 +1,19 @@
+[package]
+name = "awc-uds"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+actix-tls = "3.0.0-beta.7"
+actix-service = "2.0.1"
+awc = { version = "3.0.0-beta.9", default-features = false }
+actix-rt = "2.2"
+
+[dev-dependencies]
+actix-web = "4.0.0-beta.9"
+tempfile = "3.2"
+
+[patch.crates-io]
+actix-tls = { version = "3.0.0-beta.7", git = "https://github.com/zubr-exchange/actix-net", rev = "aa7c6db84e1748ba1301a5b9cffc16ebd4f3626e" }
