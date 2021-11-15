@@ -4,6 +4,10 @@ version = "0.1.0"
 edition = "2018"
 authors = ["Alexander Polakov <plhk@sdf.org>"]
 license = "MIT"
+description = "Unix socket connector for awc"
+repository = "https://github.com/polachok/awc-uds/"
+homepage = "https://github.com/polachok/awc-uds/"
+documentation = "https://docs.rs/awc-uds"
 
 [dependencies]
 actix-tls = "3.0.0-beta.8"
