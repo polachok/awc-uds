@@ -1,3 +1,17 @@
+//! `actix-uds` is a custom connector for [awc](https://docs.rs/awc)
+//!
+//!
+//! Usage:
+//! ```no_run
+//! use awc::{ClientBuilder, Connector};
+//! use awc_uds::UdsConnector;
+//!
+//! let socket_path = Path::new("/run/my-server.sock");
+//! let connector = Connector::new().connector(UdsConnector::new(socket_path));
+//! let client = ClientBuilder::new().connector(connector).finish();
+//! client.get("http://localhost/").send().await
+//! ```
+
 use actix_rt::net::UnixStream;
 use actix_service::Service;
 use actix_tls::connect::{Connect, ConnectError, Connection};
