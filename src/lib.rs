@@ -21,6 +21,8 @@ use std::path::{Path, PathBuf};
 use std::pin::Pin;
 use std::task::{Context, Poll};
 
+type Fut<R, E> = Pin<Box<dyn Future<Output = Result<R, E>>>>;
+
 #[derive(Clone)]
 pub struct UdsConnector(PathBuf);
 
@@ -33,7 +35,7 @@ impl UdsConnector {
 impl Service<Connect<Uri>> for UdsConnector {
     type Response = Connection<Uri, UnixStream>;
     type Error = ConnectError;
-    type Future = Pin<Box<dyn Future<Output = Result<Self::Response, Self::Error>>>>;
+    type Future = Fut<Self::Response, Self::Error>;
 
     fn poll_ready(&self, _ctx: &mut Context<'_>) -> Poll<Result<(), Self::Error>> {
         Poll::Ready(Ok(()))
