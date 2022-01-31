@@ -1,6 +1,6 @@
 [package]
 name = "awc-uds"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2018"
 authors = ["Alexander Polakov <plhk@sdf.org>"]
 license = "MIT"
