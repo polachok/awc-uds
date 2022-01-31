@@ -2,7 +2,7 @@
 //!
 //!
 //! Usage:
-//! ```no_run
+//! ```no_run compile_fail
 //! use awc::{ClientBuilder, Connector};
 //! use awc_uds::UdsConnector;
 //!
@@ -14,7 +14,7 @@
 
 use actix_rt::net::UnixStream;
 use actix_service::Service;
-use actix_tls::connect::{Connect, ConnectError, Connection};
+use actix_tls::connect::{ConnectError, ConnectInfo, Connection};
 use awc::http::Uri;
 use std::future::Future;
 use std::path::{Path, PathBuf};
@@ -32,7 +32,7 @@ impl UdsConnector {
     }
 }
 
-impl Service<Connect<Uri>> for UdsConnector {
+impl Service<ConnectInfo<Uri>> for UdsConnector {
     type Response = Connection<Uri, UnixStream>;
     type Error = ConnectError;
     type Future = Fut<Self::Response, Self::Error>;
@@ -41,12 +41,12 @@ impl Service<Connect<Uri>> for UdsConnector {
         Poll::Ready(Ok(()))
     }
 
-    fn call(&self, req: Connect<Uri>) -> Self::Future {
+    fn call(&self, req: ConnectInfo<Uri>) -> Self::Future {
         let uri = req.request().clone();
         let path = self.0.clone();
         let fut = async {
             let stream = UnixStream::connect(path).await.map_err(ConnectError::Io)?;
-            Ok(Connection::new(stream, uri))
+            Ok(Connection::new(uri, stream))
         };
         Box::pin(fut)
     }
